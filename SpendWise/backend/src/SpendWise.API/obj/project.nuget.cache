@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "v0rYwaiRx14=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\mateu\\OneDrive\\Área de Trabalho\\UNB\\TPPE\\MateusOrlando-TPPE-2025.2-WebAPi\\SpendWise\\backend\\src\\SpendWise.API\\SpendWise.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\mateu\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.0\\microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512",
+    "C:\\Users\\mateu\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

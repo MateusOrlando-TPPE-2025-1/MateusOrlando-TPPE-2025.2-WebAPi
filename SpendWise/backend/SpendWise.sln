@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{75468A15-793C-401E-AA35-86C08F0B2DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Domain", "src\SpendWise.Domain\SpendWise.Domain.csproj", "{3DEF17AE-0133-4375-B8F5-C6F80EF4067E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Application", "src\SpendWise.Application\SpendWise.Application.csproj", "{7BEC9B85-04F0-42D9-85E9-B8095F0D5425}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.Infrastructure", "src\SpendWise.Infrastructure\SpendWise.Infrastructure.csproj", "{6CB3CF95-4276-43A4-83C1-387BD713CD18}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpendWise.API", "src\SpendWise.API\SpendWise.API.csproj", "{7C56E3A3-A47F-4930-A741-30141106717B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3DEF17AE-0133-4375-B8F5-C6F80EF4067E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DEF17AE-0133-4375-B8F5-C6F80EF4067E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DEF17AE-0133-4375-B8F5-C6F80EF4067E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DEF17AE-0133-4375-B8F5-C6F80EF4067E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BEC9B85-04F0-42D9-85E9-B8095F0D5425}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BEC9B85-04F0-42D9-85E9-B8095F0D5425}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BEC9B85-04F0-42D9-85E9-B8095F0D5425}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BEC9B85-04F0-42D9-85E9-B8095F0D5425}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6CB3CF95-4276-43A4-83C1-387BD713CD18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6CB3CF95-4276-43A4-83C1-387BD713CD18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6CB3CF95-4276-43A4-83C1-387BD713CD18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6CB3CF95-4276-43A4-83C1-387BD713CD18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C56E3A3-A47F-4930-A741-30141106717B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C56E3A3-A47F-4930-A741-30141106717B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C56E3A3-A47F-4930-A741-30141106717B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C56E3A3-A47F-4930-A741-30141106717B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3DEF17AE-0133-4375-B8F5-C6F80EF4067E} = {75468A15-793C-401E-AA35-86C08F0B2DCA}
+		{7BEC9B85-04F0-42D9-85E9-B8095F0D5425} = {75468A15-793C-401E-AA35-86C08F0B2DCA}
+		{6CB3CF95-4276-43A4-83C1-387BD713CD18} = {75468A15-793C-401E-AA35-86C08F0B2DCA}
+		{7C56E3A3-A47F-4930-A741-30141106717B} = {75468A15-793C-401E-AA35-86C08F0B2DCA}
+	EndGlobalSection
+EndGlobal
