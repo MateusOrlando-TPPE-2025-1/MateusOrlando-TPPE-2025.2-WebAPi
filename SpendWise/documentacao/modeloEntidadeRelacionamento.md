@@ -71,9 +71,9 @@ erDiagram
     CATEGORIA ||--o{ TRANSACAO : "categoriza"
 ```
 
-## 📋 ESPECIFICAÇÃO DAS ENTIDADES
+## ESPECIFICAÇÃO DAS ENTIDADES
 
-### 👤 **USUARIO**
+### **USUARIO**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -89,7 +89,7 @@ erDiagram
 
 ---
 
-### 🏷️ **CATEGORIA**
+### **CATEGORIA**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -112,7 +112,7 @@ erDiagram
 
 ---
 
-### 💰 **TRANSACAO**
+### **TRANSACAO**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -140,7 +140,7 @@ erDiagram
 
 ---
 
-### 📊 **ORCAMENTO_MENSAL**
+### **ORCAMENTO_MENSAL**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -162,7 +162,7 @@ erDiagram
 
 ---
 
-### 🎯 **META_FINANCEIRA**
+### **META_FINANCEIRA**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -184,7 +184,7 @@ erDiagram
 
 ---
 
-### 🔒 **FECHAMENTO_MENSAL**
+### **FECHAMENTO_MENSAL**
 | Campo | Tipo | Restrições | Descrição |
 |-------|------|------------|-----------|
 | id | BIGSERIAL | PK, NOT NULL | Identificador único |
@@ -202,7 +202,7 @@ erDiagram
 - Apenas um fechamento por mês por usuário
 - Fechamento é irreversível (exceto com permissões especiais)
 
-## 🔍 **ÍNDICES PROPOSTOS**
+## **ÍNDICES PROPOSTOS**
 ```sql
 -- Performance para consultas frequentes
 CREATE INDEX idx_transacao_usuario_data ON transacao(usuario_id, data);
