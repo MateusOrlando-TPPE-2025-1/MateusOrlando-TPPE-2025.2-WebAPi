@@ -2,7 +2,7 @@
 
 ## **Visão Geral**
 
-Evolução completa de um projeto Java simples para uma aplicação enterprise robusta demonstrando as melhores práticas de desenvolvimento.
+Evolução completa de um projeto Java simples(https://github.com/Vitor4818/Minhas-Financas-Java/tree/main) para uma aplicação enterprise robusta demonstrando as melhores práticas de desenvolvimento.
 
 ### **Transformação:**
 - **De:** Console app Java básico
@@ -23,7 +23,7 @@ Evolução completa de um projeto Java simples para uma aplicação enterprise r
 
 ### **Pré-requisitos:**
 - Docker Desktop
-- .NET 8 SDK
+- .NET 9 SDK
 - Next.js
 
 

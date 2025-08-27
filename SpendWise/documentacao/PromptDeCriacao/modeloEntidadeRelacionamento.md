@@ -3,7 +3,7 @@
 
 ## ENTIDADES E RELACIONAMENTOS
 
-```mermaid
+
 erDiagram
     %% ============= ENTIDADES =============
     
