@@ -1,10 +1,32 @@
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SpendWise.Application;
 using SpendWise.Infrastructure;
 using SpendWise.Infrastructure.Data;
+using System.Text;
+using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+// Configurar Serilog
+Log.Logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("logs/spendwise-.txt", rollingInterval: RollingInterval.Day)
+    .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithEnvironmentUserName()
+    .Enrich.WithProcessId()
+    .Enrich.WithThreadId()
+    .CreateLogger();
+
+try
+{
+    Log.Information("Iniciando aplicação SpendWise API");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    // Configurar Serilog como provedor de logging
+    builder.Host.UseSerilog();
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -18,6 +40,34 @@ builder.Services.AddSwaggerGen(c =>
         Title = "SpendWise API",
         Version = "v1",
         Description = "API para gerenciamento de finanças pessoais"
+    });
+    
+    // Configurar JWT no Swagger
+    c.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header usando o esquema Bearer. \r\n\r\n Digite 'Bearer' [espaço] e então seu token no campo de texto abaixo.\r\n\r\nExemplo: \"Bearer 12345abcdef\"",
+        Name = "Authorization",
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement()
+    {
+        {
+            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            {
+                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                {
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                },
+                Scheme = "oauth2",
+                Name = "Bearer",
+                In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+            },
+            new List<string>()
+        }
     });
 });
 
@@ -39,6 +89,34 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// Add JWT Authentication
+var jwtSecretKey = builder.Configuration["JWT:SecretKey"] ?? "MinhaChaveSecretaSuperSeguraParaJWT2024!@#$%";
+var key = Encoding.ASCII.GetBytes(jwtSecretKey);
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"] ?? "SpendWise",
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:Audience"] ?? "SpendWise",
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
+builder.Services.AddAuthorization();
+
 // Add Application Services
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure();
@@ -55,11 +133,28 @@ if (app.Environment.IsDevelopment())
         c.RoutePrefix = "swagger";
     });
 }
+// Add Request Logging Middleware
+app.UseMiddleware<SpendWise.API.Middleware.RequestLoggingMiddleware>();
+
 // Add Error Handling Middleware
 app.UseMiddleware<SpendWise.API.Middleware.ErrorHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
-app.UseAuthorization();
-app.MapControllers();
 
-app.Run();
+// Add Authentication & Authorization
+app.UseAuthentication();
+app.UseAuthorization();
+
+    app.MapControllers();
+
+    Log.Information("SpendWise API iniciada com sucesso");
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Aplicação falhou ao iniciar");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

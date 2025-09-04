@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using FluentValidation;
+using SpendWise.Domain.Exceptions;
 
 namespace SpendWise.API.Middleware;
 
@@ -23,7 +24,8 @@ public class ErrorHandlingMiddleware
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ocorreu uma exceção não tratada: {Message}", ex.Message);
+            _logger.LogError(ex, "Exceção não tratada capturada: {ExceptionType} - {Message} | RequestMethod: {RequestMethod} | RequestPath: {RequestPath}",
+                ex.GetType().Name, ex.Message, context.Request.Method, context.Request.Path);
             await HandleExceptionAsync(context, ex);
         }
     }
@@ -37,6 +39,19 @@ public class ErrorHandlingMiddleware
 
         switch (exception)
         {
+            case MesFechadoException:
+                statusCode = (int)HttpStatusCode.BadRequest;
+                response = new
+                {
+                    erro = new
+                    {
+                        mensagem = "Operação não permitida",
+                        detalhes = exception.Message,
+                        codigo = "MES_FECHADO"
+                    }
+                };
+                break;
+                
             case ValidationException validationEx:
                 statusCode = (int)HttpStatusCode.BadRequest;
                 response = new

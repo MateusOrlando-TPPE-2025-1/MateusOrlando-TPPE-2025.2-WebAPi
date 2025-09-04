@@ -1,11 +1,14 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpendWise.Application.DTOs;
 using SpendWise.Application.Commands.Usuario;
 using SpendWise.Application.Queries.Usuario;
+using SpendWise.API.Extensions;
 using MediatR;
 
 namespace SpendWise.API.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 [Produces("application/json")]
@@ -19,23 +22,13 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Obter todos os usuários
+    /// Obter perfil do usuário logado
     /// </summary>
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<UsuarioDto>>> GetAll()
+    [HttpGet("me")]
+    public async Task<ActionResult<UsuarioDto>> GetProfile()
     {
-        var query = new GetAllUsuariosQuery();
-        var usuarios = await _mediator.Send(query);
-        return Ok(usuarios);
-    }
-
-    /// <summary>
-    /// Obter usuário por ID
-    /// </summary>
-    [HttpGet("{id}")]
-    public async Task<ActionResult<UsuarioDto>> GetById(Guid id)
-    {
-        var query = new GetUsuarioByIdQuery { Id = id };
+        var usuarioId = User.GetUserId();
+        var query = new GetUsuarioByIdQuery(usuarioId);
         var usuario = await _mediator.Send(query);
         
         if (usuario == null)
@@ -45,35 +38,61 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Criar novo usuário
+    /// Obter usuário por ID (apenas o próprio)
     /// </summary>
-    [HttpPost]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UsuarioDto>> GetById(Guid id)
+    {
+        var usuarioId = User.GetUserId();
+        
+        // Só permite acessar o próprio perfil
+        if (id != usuarioId)
+            return Forbid();
+            
+        var query = new GetUsuarioByIdQuery(id);
+        var usuario = await _mediator.Send(query);
+        
+        if (usuario == null)
+            return NotFound();
+            
+        return Ok(usuario);
+    }
+
+    /// <summary>
+    /// Criar novo usuário (registro)
+    /// </summary>
+    [AllowAnonymous]
+    [HttpPost("register")]
     public async Task<ActionResult<UsuarioDto>> Create([FromBody] CreateUsuarioDto createDto)
     {
-        var command = new CreateUsuarioCommand
-        {
-            Nome = createDto.Nome,
-            Email = createDto.Email,
-            Password = createDto.Password,
-            RendaMensal = createDto.RendaMensal
-        };
+        var command = new CreateUsuarioCommand(
+            createDto.Nome,
+            createDto.Email,
+            createDto.Password,
+            createDto.RendaMensal
+        );
 
         var usuario = await _mediator.Send(command);
         return CreatedAtAction(nameof(GetById), new { id = usuario.Id }, usuario);
     }
 
     /// <summary>
-    /// Atualizar usuário
+    /// Atualizar perfil próprio
     /// </summary>
     [HttpPut("{id}")]
     public async Task<ActionResult<UsuarioDto>> Update(Guid id, [FromBody] UpdateUsuarioDto updateDto)
     {
-        var command = new UpdateUsuarioCommand
-        {
-            Id = id,
-            Nome = updateDto.Nome,
-            RendaMensal = updateDto.RendaMensal
-        };
+        var usuarioId = User.GetUserId();
+        
+        // Só permite atualizar o próprio perfil
+        if (id != usuarioId)
+            return Forbid();
+            
+        var command = new UpdateUsuarioCommand(
+            id,
+            updateDto.Nome,
+            updateDto.RendaMensal
+        );
 
         var usuario = await _mediator.Send(command);
         
@@ -84,12 +103,18 @@ public class UsuariosController : ControllerBase
     }
 
     /// <summary>
-    /// Deletar usuário
+    /// Deletar conta própria
     /// </summary>
     [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
-        var command = new DeleteUsuarioCommand { Id = id };
+        var usuarioId = User.GetUserId();
+        
+        // Só permite deletar a própria conta
+        if (id != usuarioId)
+            return Forbid();
+            
+        var command = new DeleteUsuarioCommand(id);
         var success = await _mediator.Send(command);
         
         if (!success)
