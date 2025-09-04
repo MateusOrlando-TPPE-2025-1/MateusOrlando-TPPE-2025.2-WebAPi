@@ -31,6 +31,19 @@ public class CategoriaConfiguration : IEntityTypeConfiguration<Categoria>
 
         builder.Property(c => c.UpdatedAt);
 
+        // Configuração do Value Object Money para Limite
+        builder.OwnsOne(c => c.Limite, limite =>
+        {
+            limite.Property(m => m.Valor)
+                .HasColumnName("LimiteValor")
+                .HasPrecision(18, 2);
+            
+            limite.Property(m => m.Moeda)
+                .HasColumnName("LimiteMoeda")
+                .HasMaxLength(3)
+                .HasDefaultValue("BRL");
+        });
+
         // Relacionamentos
         builder.HasOne(c => c.Usuario)
             .WithMany(u => u.Categorias)

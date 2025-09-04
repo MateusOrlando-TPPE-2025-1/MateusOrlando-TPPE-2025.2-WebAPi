@@ -13,6 +13,9 @@ public class UnitOfWork : IUnitOfWork
     private IUsuarioRepository? _usuarios;
     private ICategoriaRepository? _categorias;
     private ITransacaoRepository? _transacoes;
+    private IOrcamentoMensalRepository? _orcamentosMensais;
+    private IFechamentoMensalRepository? _fechamentosMensais;
+    private IMetaRepository? _metas;
 
     public UnitOfWork(ApplicationDbContext context)
     {
@@ -27,6 +30,15 @@ public class UnitOfWork : IUnitOfWork
 
     public ITransacaoRepository Transacoes =>
         _transacoes ??= new TransacaoRepository(_context);
+
+    public IOrcamentoMensalRepository OrcamentosMensais =>
+        _orcamentosMensais ??= new OrcamentoMensalRepository(_context);
+
+    public IFechamentoMensalRepository FechamentosMensais =>
+        _fechamentosMensais ??= new FechamentoMensalRepository(_context);
+
+    public IMetaRepository Metas =>
+        _metas ??= new MetaRepository(_context);
 
     public async Task<int> SaveChangesAsync()
     {

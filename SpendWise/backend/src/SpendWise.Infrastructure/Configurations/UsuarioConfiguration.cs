@@ -16,7 +16,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsRequired()
             .HasMaxLength(200);
 
-        builder.Property(u => u.PasswordHash)
+        builder.Property(u => u.Senha)
             .IsRequired()
             .HasMaxLength(500);
 
@@ -30,6 +30,12 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
             .IsRequired();
 
         builder.Property(u => u.UpdatedAt);
+
+        // Campos para reset de senha
+        builder.Property(u => u.PasswordResetToken)
+            .HasMaxLength(100);
+
+        builder.Property(u => u.PasswordResetTokenExpiry);
 
         // Relacionamentos
         builder.HasMany(u => u.Categorias)

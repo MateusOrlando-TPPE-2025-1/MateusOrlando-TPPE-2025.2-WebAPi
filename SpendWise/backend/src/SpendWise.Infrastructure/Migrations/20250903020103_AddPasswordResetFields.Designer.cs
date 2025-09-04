@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SpendWise.Infrastructure.Data;
@@ -11,9 +12,11 @@ using SpendWise.Infrastructure.Data;
 namespace SpendWise.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250903020103_AddPasswordResetFields")]
+    partial class AddPasswordResetFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,58 +130,6 @@ namespace SpendWise.Infrastructure.Migrations
                         .HasDatabaseName("IX_FechamentosMensais_Usuario_AnoMes");
 
                     b.ToTable("FechamentosMensais", (string)null);
-                });
-
-            modelBuilder.Entity("SpendWise.Domain.Entities.Meta", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("DataAlcancada")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Descricao")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
-
-                    b.Property<bool>("IsAtiva")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<DateTime>("Prazo")
-                        .HasColumnType("date");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("UsuarioId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DataAlcancada")
-                        .HasDatabaseName("IX_Metas_DataAlcancada");
-
-                    b.HasIndex("UsuarioId")
-                        .HasDatabaseName("IX_Metas_UsuarioId");
-
-                    b.HasIndex("UsuarioId", "IsAtiva")
-                        .HasDatabaseName("IX_Metas_UsuarioId_IsAtiva");
-
-                    b.HasIndex("UsuarioId", "Prazo")
-                        .HasDatabaseName("IX_Metas_UsuarioId_Prazo");
-
-                    b.ToTable("Metas", (string)null);
                 });
 
             modelBuilder.Entity("SpendWise.Domain.Entities.OrcamentoMensal", b =>
@@ -372,65 +323,6 @@ namespace SpendWise.Infrastructure.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("SpendWise.Domain.Entities.Meta", b =>
-                {
-                    b.HasOne("SpendWise.Domain.Entities.Usuario", "Usuario")
-                        .WithMany("Metas")
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("SpendWise.Domain.ValueObjects.Money", "ValorAtual", b1 =>
-                        {
-                            b1.Property<Guid>("MetaId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Moeda")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<decimal>("Valor")
-                                .HasColumnType("decimal(18,2)")
-                                .HasColumnName("ValorAtual");
-
-                            b1.HasKey("MetaId");
-
-                            b1.ToTable("Metas");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MetaId");
-                        });
-
-                    b.OwnsOne("SpendWise.Domain.ValueObjects.Money", "ValorObjetivo", b1 =>
-                        {
-                            b1.Property<Guid>("MetaId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Moeda")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<decimal>("Valor")
-                                .HasColumnType("decimal(18,2)")
-                                .HasColumnName("ValorObjetivo");
-
-                            b1.HasKey("MetaId");
-
-                            b1.ToTable("Metas");
-
-                            b1.WithOwner()
-                                .HasForeignKey("MetaId");
-                        });
-
-                    b.Navigation("Usuario");
-
-                    b.Navigation("ValorAtual")
-                        .IsRequired();
-
-                    b.Navigation("ValorObjetivo")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("SpendWise.Domain.Entities.OrcamentoMensal", b =>
                 {
                     b.HasOne("SpendWise.Domain.Entities.Usuario", "Usuario")
@@ -527,8 +419,6 @@ namespace SpendWise.Infrastructure.Migrations
             modelBuilder.Entity("SpendWise.Domain.Entities.Usuario", b =>
                 {
                     b.Navigation("Categorias");
-
-                    b.Navigation("Metas");
 
                     b.Navigation("Transacoes");
                 });

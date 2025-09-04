@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SpendWise.Domain.Entities;
 using SpendWise.Domain.Interfaces;
+using SpendWise.Domain.ValueObjects;
 using SpendWise.Infrastructure.Data;
 
 namespace SpendWise.Infrastructure.Repositories;
@@ -14,7 +15,7 @@ public class UsuarioRepository : IUsuarioRepository
         _context = context;
     }
 
-    public async Task<Usuario?> GetByIdAsync(Guid id)
+    public async Task<Usuario?> BuscarPorIdAsync(Guid id)
     {
         return await _context.Usuarios
             .Include(u => u.Categorias)
@@ -22,32 +23,36 @@ public class UsuarioRepository : IUsuarioRepository
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<Usuario?> GetByEmailAsync(string email)
+    public async Task<Usuario?> GetByIdAsync(Guid id)
     {
-        return await _context.Usuarios
-            .FirstOrDefaultAsync(u => u.Email.Valor == email.ToLowerInvariant());
+        return await BuscarPorIdAsync(id);
     }
 
-    public async Task<IEnumerable<Usuario>> GetAllAsync()
+    public async Task<Usuario?> BuscarPorEmailAsync(Email email)
+    {
+        return await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Email.Valor == email.Valor.ToLowerInvariant());
+    }
+
+    public async Task<IEnumerable<Usuario>> BuscarTodosAsync()
     {
         return await _context.Usuarios
             .Where(u => u.IsAtivo)
             .ToListAsync();
     }
 
-    public async Task<Usuario> AddAsync(Usuario usuario)
+    public async Task AdicionarAsync(Usuario usuario)
     {
-        var result = await _context.Usuarios.AddAsync(usuario);
-        return result.Entity;
+        await _context.Usuarios.AddAsync(usuario);
     }
 
-    public async Task UpdateAsync(Usuario usuario)
+    public async Task AtualizarAsync(Usuario usuario)
     {
         _context.Usuarios.Update(usuario);
         await Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task ExcluirAsync(Guid id)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario != null)
@@ -57,9 +62,14 @@ public class UsuarioRepository : IUsuarioRepository
         }
     }
 
-    public async Task<bool> EmailExistsAsync(string email)
+    public async Task<bool> EmailExisteAsync(Email email)
     {
         return await _context.Usuarios
-            .AnyAsync(u => u.Email.Valor == email.ToLowerInvariant());
+            .AnyAsync(u => u.Email.Valor == email.Valor.ToLowerInvariant());
+    }
+
+    public async Task SalvarAsync()
+    {
+        await _context.SaveChangesAsync();
     }
 }
