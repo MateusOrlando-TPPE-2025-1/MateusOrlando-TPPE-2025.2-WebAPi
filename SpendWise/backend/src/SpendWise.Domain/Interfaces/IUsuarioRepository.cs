@@ -1,14 +1,17 @@
 using SpendWise.Domain.Entities;
+using SpendWise.Domain.ValueObjects;
 
 namespace SpendWise.Domain.Interfaces;
 
 public interface IUsuarioRepository
 {
+    Task<Usuario?> BuscarPorIdAsync(Guid id);
     Task<Usuario?> GetByIdAsync(Guid id);
-    Task<Usuario?> GetByEmailAsync(string email);
-    Task<IEnumerable<Usuario>> GetAllAsync();
-    Task<Usuario> AddAsync(Usuario usuario);
-    Task UpdateAsync(Usuario usuario);
-    Task DeleteAsync(Guid id);
-    Task<bool> EmailExistsAsync(string email);
+    Task<Usuario?> BuscarPorEmailAsync(Email email);
+    Task<IEnumerable<Usuario>> BuscarTodosAsync();
+    Task AdicionarAsync(Usuario usuario);
+    Task AtualizarAsync(Usuario usuario);
+    Task ExcluirAsync(Guid id);
+    Task<bool> EmailExisteAsync(Email email);
+    Task SalvarAsync();
 }

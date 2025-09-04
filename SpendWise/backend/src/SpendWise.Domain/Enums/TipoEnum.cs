@@ -6,6 +6,12 @@ public enum TipoCategoria
     Despesa = 2
 }
 
+public enum PrioridadeCategoria
+{
+    Essencial = 1,
+    Superfluo = 2
+}
+
 public enum TipoTransacao
 {
     Receita = 1,

@@ -10,15 +10,18 @@ public class Email
 
     public string Valor { get; private set; }
 
+    public string Domain => Valor.Split('@')[1];
+    public string LocalPart => Valor.Split('@')[0];
+
     private Email() { } // Para EF Core
 
     public Email(string valor)
     {
         if (string.IsNullOrWhiteSpace(valor))
-            throw new ArgumentException("Email não pode ser vazio", nameof(valor));
+            throw new ArgumentException("Email inválido", nameof(valor));
 
         if (!EmailRegex.IsMatch(valor))
-            throw new ArgumentException("Formato de email inválido", nameof(valor));
+            throw new ArgumentException("Email inválido", nameof(valor));
 
         Valor = valor.ToLowerInvariant();
     }
@@ -35,4 +38,7 @@ public class Email
     }
 
     public override int GetHashCode() => Valor.GetHashCode();
+
+    public static bool operator ==(Email left, Email right) => left.Equals(right);
+    public static bool operator !=(Email left, Email right) => !left.Equals(right);
 }
