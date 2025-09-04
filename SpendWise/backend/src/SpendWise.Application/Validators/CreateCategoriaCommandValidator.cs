@@ -21,5 +21,9 @@ public class CreateCategoriaCommandValidator : AbstractValidator<CreateCategoria
         RuleFor(x => x.Descricao)
             .MaximumLength(500).WithMessage("Descrição deve ter no máximo 500 caracteres")
             .When(x => !string.IsNullOrEmpty(x.Descricao));
+
+        RuleFor(x => x.Limite)
+            .GreaterThanOrEqualTo(0).WithMessage("Limite deve ser maior ou igual a zero")
+            .When(x => x.Limite.HasValue);
     }
 }

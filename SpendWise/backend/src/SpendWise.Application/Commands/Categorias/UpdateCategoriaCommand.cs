@@ -9,5 +9,6 @@ public record UpdateCategoriaCommand(
     string Nome,
     string? Descricao,
     TipoCategoria Tipo,
-    bool IsAtiva
+    bool IsAtiva,
+    decimal? Limite = null
 ) : IRequest<CategoriaDto?>;

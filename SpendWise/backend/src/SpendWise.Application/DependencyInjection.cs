@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using SpendWise.Application.Mappings;
+using SpendWise.Application.Services;
+using SpendWise.Application.Validators.BusinessRules;
 
 namespace SpendWise.Application;
 
@@ -14,6 +16,15 @@ public static class DependencyInjection
         
         // Add FluentValidation
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        // Add Application Services (Utilities only)
+        services.AddScoped<IExportService, ExportService>();
+        
+        // Add Business Rules (CQRS Pattern)
+        services.AddScoped<IBusinessRule, TemporalValidationRule>();
+        services.AddScoped<IBusinessRule, CategoryLimitValidationRule>();
+        services.AddScoped<IBusinessRule, BudgetValidationRule>();
+        services.AddScoped<IBusinessRule, PriorityValidationRule>();
         
         return services;
     }

@@ -1,7 +1,7 @@
 using FluentValidation;
 using SpendWise.Application.Commands.Usuario;
 
-namespace SpendWise.Application.Validators;
+namespace SpendWise.Application.Validators.Usuario;
 
 public class CreateUsuarioCommandValidator : AbstractValidator<CreateUsuarioCommand>
 {

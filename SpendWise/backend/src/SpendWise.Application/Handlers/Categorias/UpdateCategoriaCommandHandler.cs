@@ -3,6 +3,7 @@ using MediatR;
 using SpendWise.Application.DTOs;
 using SpendWise.Application.Commands.Categorias;
 using SpendWise.Domain.Interfaces;
+using SpendWise.Domain.ValueObjects;
 
 namespace SpendWise.Application.Handlers.Categorias;
 
@@ -27,6 +28,17 @@ public class UpdateCategoriaCommandHandler : IRequestHandler<UpdateCategoriaComm
         // Usar métodos da entidade em vez de setters
         categoria.AtualizarNome(request.Nome);
         categoria.AtualizarDescricao(request.Descricao);
+        
+        // Atualizar limite se fornecido
+        if (request.Limite.HasValue)
+        {
+            var limite = new Money(request.Limite.Value);
+            categoria.AtualizarLimite(limite);
+        }
+        else
+        {
+            categoria.AtualizarLimite(null);
+        }
         
         if (request.IsAtiva)
             categoria.Ativar();

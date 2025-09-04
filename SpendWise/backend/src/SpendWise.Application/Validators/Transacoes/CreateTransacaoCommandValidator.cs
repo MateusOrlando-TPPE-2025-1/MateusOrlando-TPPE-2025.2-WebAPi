@@ -1,7 +1,7 @@
 using FluentValidation;
 using SpendWise.Application.Commands.Transacoes;
 
-namespace SpendWise.Application.Validators;
+namespace SpendWise.Application.Validators.Transacoes;
 
 public class CreateTransacaoCommandValidator : AbstractValidator<CreateTransacaoCommand>
 {
@@ -21,7 +21,7 @@ public class CreateTransacaoCommandValidator : AbstractValidator<CreateTransacao
 
         RuleFor(x => x.DataTransacao)
             .NotEmpty().WithMessage("Data da transação é obrigatória")
-            .LessThanOrEqualTo(DateTime.Now.AddDays(1)).WithMessage("Data não pode ser no futuro");
+            .LessThanOrEqualTo(DateTime.Now.Date).WithMessage("Data não pode ser no futuro");
 
         RuleFor(x => x.Tipo)
             .IsInEnum().WithMessage("Tipo de transação inválido");
@@ -30,7 +30,8 @@ public class CreateTransacaoCommandValidator : AbstractValidator<CreateTransacao
             .NotEmpty().WithMessage("UsuarioId é obrigatório");
 
         RuleFor(x => x.CategoriaId)
-            .NotEmpty().WithMessage("CategoriaId é obrigatório");
+            .NotEmpty().WithMessage("CategoriaId é obrigatório para despesas")
+            .When(x => x.Tipo == Domain.Enums.TipoTransacao.Despesa);
 
         RuleFor(x => x.Observacoes)
             .MaximumLength(1000).WithMessage("Observações devem ter no máximo 1000 caracteres")

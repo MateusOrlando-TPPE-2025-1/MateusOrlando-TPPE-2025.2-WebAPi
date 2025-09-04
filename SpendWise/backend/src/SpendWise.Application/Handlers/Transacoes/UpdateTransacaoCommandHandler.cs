@@ -3,6 +3,8 @@ using MediatR;
 using SpendWise.Application.DTOs;
 using SpendWise.Application.Commands.Transacoes;
 using SpendWise.Domain.Interfaces;
+using SpendWise.Domain.Exceptions;
+using SpendWise.Domain.Utils;
 
 namespace SpendWise.Application.Handlers.Transacoes;
 
@@ -23,6 +25,29 @@ public class UpdateTransacaoCommandHandler : IRequestHandler<UpdateTransacaoComm
         
         if (transacao == null)
             return null;
+
+        // Verificar se o mês da transação original está fechado
+        var anoMesOriginal = DateUtils.ToAnoMesString(transacao.DataTransacao);
+        var mesOriginalFechado = await _unitOfWork.FechamentosMensais.MesEstaFechadoAsync(transacao.UsuarioId, anoMesOriginal);
+        
+        // Verificar se o mês da nova data está fechado (se mudou)
+        var anoMesNovo = DateUtils.ToAnoMesString(request.DataTransacao);
+        var mesNovoFechado = false;
+        
+        if (anoMesOriginal != anoMesNovo)
+        {
+            mesNovoFechado = await _unitOfWork.FechamentosMensais.MesEstaFechadoAsync(transacao.UsuarioId, anoMesNovo);
+        }
+
+        if (mesOriginalFechado)
+        {
+            throw new MesFechadoException(anoMesOriginal, "editar transações");
+        }
+
+        if (mesNovoFechado)
+        {
+            throw new MesFechadoException(anoMesNovo, "mover transações para");
+        }
 
         // Usar métodos da entidade para atualizar
         transacao.AtualizarDescricao(request.Descricao);

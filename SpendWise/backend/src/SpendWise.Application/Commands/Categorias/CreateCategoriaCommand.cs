@@ -8,5 +8,6 @@ public record CreateCategoriaCommand(
     string Nome,
     string? Descricao,
     TipoCategoria Tipo,
-    Guid UsuarioId
+    Guid UsuarioId,
+    decimal? Limite = null
 ) : IRequest<CategoriaDto>;

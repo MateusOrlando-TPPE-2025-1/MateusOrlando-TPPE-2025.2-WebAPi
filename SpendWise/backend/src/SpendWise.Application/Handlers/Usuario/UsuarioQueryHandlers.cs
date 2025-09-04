@@ -17,7 +17,7 @@ public class GetUsuarioByIdQueryHandler : IRequestHandler<GetUsuarioByIdQuery, U
 
     public async Task<UsuarioDto?> Handle(GetUsuarioByIdQuery request, CancellationToken cancellationToken)
     {
-        var usuario = await _unitOfWork.Usuarios.GetByIdAsync(request.Id);
+        var usuario = await _unitOfWork.Usuarios.BuscarPorIdAsync(request.Id);
         return usuario == null ? null : _mapper.Map<UsuarioDto>(usuario);
     }
 }
@@ -35,7 +35,7 @@ public class GetAllUsuariosQueryHandler : IRequestHandler<GetAllUsuariosQuery, I
 
     public async Task<IEnumerable<UsuarioDto>> Handle(GetAllUsuariosQuery request, CancellationToken cancellationToken)
     {
-        var usuarios = await _unitOfWork.Usuarios.GetAllAsync();
+        var usuarios = await _unitOfWork.Usuarios.BuscarTodosAsync();
         return _mapper.Map<IEnumerable<UsuarioDto>>(usuarios);
     }
 }

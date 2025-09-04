@@ -20,7 +20,7 @@ public class CreateUsuarioCommandHandler : IRequestHandler<CreateUsuarioCommand,
     public async Task<UsuarioDto> Handle(CreateUsuarioCommand request, CancellationToken cancellationToken)
     {
         // Verificar se email já existe
-        if (await _unitOfWork.Usuarios.EmailExistsAsync(request.Email))
+        if (await _unitOfWork.Usuarios.EmailExisteAsync(new Email(request.Email)))
         {
             throw new InvalidOperationException("Email já está em uso");
         }
@@ -37,7 +37,7 @@ public class CreateUsuarioCommandHandler : IRequestHandler<CreateUsuarioCommand,
         );
 
         // Salvar no banco
-        await _unitOfWork.Usuarios.AddAsync(usuario);
+        await _unitOfWork.Usuarios.AdicionarAsync(usuario);
         await _unitOfWork.SaveChangesAsync();
 
         // Retornar DTO

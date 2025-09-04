@@ -1,6 +1,8 @@
 using MediatR;
 using SpendWise.Application.Commands.Transacoes;
 using SpendWise.Domain.Interfaces;
+using SpendWise.Domain.Exceptions;
+using SpendWise.Domain.Utils;
 
 namespace SpendWise.Application.Handlers.Transacoes;
 
@@ -19,6 +21,15 @@ public class DeleteTransacaoCommandHandler : IRequestHandler<DeleteTransacaoComm
         
         if (transacao == null)
             return false;
+
+        // Verificar se o mês da transação está fechado
+        var anoMes = DateUtils.ToAnoMesString(transacao.DataTransacao);
+        var mesEstaFechado = await _unitOfWork.FechamentosMensais.MesEstaFechadoAsync(transacao.UsuarioId, anoMes);
+        
+        if (mesEstaFechado)
+        {
+            throw new MesFechadoException(anoMes, "excluir transações");
+        }
 
         await _unitOfWork.Transacoes.DeleteAsync(request.Id);
         await _unitOfWork.SaveChangesAsync();

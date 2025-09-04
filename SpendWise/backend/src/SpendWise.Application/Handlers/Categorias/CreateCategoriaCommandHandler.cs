@@ -4,6 +4,7 @@ using SpendWise.Application.DTOs;
 using SpendWise.Application.Commands.Categorias;
 using SpendWise.Domain.Entities;
 using SpendWise.Domain.Interfaces;
+using SpendWise.Domain.ValueObjects;
 
 namespace SpendWise.Application.Handlers.Categorias;
 
@@ -20,7 +21,8 @@ public class CreateCategoriaCommandHandler : IRequestHandler<CreateCategoriaComm
 
     public async Task<CategoriaDto> Handle(CreateCategoriaCommand request, CancellationToken cancellationToken)
     {
-        var categoria = new Categoria(request.Nome, request.Tipo, request.UsuarioId, request.Descricao);
+        Money? limite = request.Limite.HasValue ? new Money(request.Limite.Value) : null;
+        var categoria = new Categoria(request.Nome, request.Tipo, request.UsuarioId, request.Descricao, limite);
 
         var result = await _unitOfWork.Categorias.AddAsync(categoria);
         await _unitOfWork.SaveChangesAsync();
